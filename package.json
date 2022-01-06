@@ -1,0 +1,40 @@
+{
+  "name": "bussy",
+  "version": "0.0.1",
+  "description": "CQS bus",
+  "main": "index.ts",
+  "scripts": {
+    "test": "tap --ts --reporter=spec tests/**.ts",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franck-romano/bussy.git"
+  },
+  "author": "franck.romano@protonmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franck-romano/bussy/issues"
+  },
+  "homepage": "https://github.com/franck-romano/bussy#readme",
+  "devDependencies": {
+    "@types/node": "14.11.2",
+    "@types/tap": "15.0.5",
+    "cz-conventional-changelog": "3.0.1",
+    "gts": "3.1.0",
+    "tap": "^15.1.6",
+    "ts-node": "^10.4.0",
+    "typescript": "4.4.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
