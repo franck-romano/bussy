@@ -8,8 +8,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "test": "tap -w --ts --reporter=spec tests/**/*.test.ts",
-    "test:watch": "tap --ts --reporter=spec tests/**/*.test.ts",
+    "test": "tap --ts --reporter=spec tests/**/*.test.ts",
+    "test:watch": "tap -w --ts --reporter=spec tests/**/*.test.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
