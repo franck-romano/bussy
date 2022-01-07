@@ -5,7 +5,8 @@
     "node": ">=14.0.0"
   },
   "description": "CQS bus",
-  "main": "index.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
     "test": "tap --ts --reporter=spec tests/**/*.test.ts",
     "lint": "gts lint",
