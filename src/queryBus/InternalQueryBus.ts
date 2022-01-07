@@ -1,24 +1,12 @@
-import { QueryBus, QueryHandlers } from './types/QueryBus';
+import { QueryBus } from './types/QueryBus';
 import { Query } from './types/Query';
 import { ReadModel } from './types/ReadModel';
-import { QueryNotHandledError } from './types/QueryNotHandledError';
+import { QueryMiddleware } from './types/QueryMiddleware';
 
 export class InternalQueryBus implements QueryBus {
-  private queryHandlers: QueryHandlers = {};
-
-  registerQueryHandlers(queryHandlers: QueryHandlers): QueryBus {
-    this.queryHandlers = queryHandlers;
-    return this;
-  }
+  constructor(private middlewareChain: QueryMiddleware) {}
 
   async publish(query: Query): Promise<ReadModel> {
-    const queryLabel = query.label();
-    const queryHandler = this.queryHandlers[queryLabel];
-
-    if (!queryHandler) {
-      throw new QueryNotHandledError(queryLabel);
-    }
-
-    return queryHandler.handle(query);
+    return this.middlewareChain.handle(query);
   }
 }

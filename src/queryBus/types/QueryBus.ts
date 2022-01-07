@@ -5,6 +5,4 @@ import { QueryHandler } from './QueryHandler';
 
 export type QueryHandlers = { [query: string]: QueryHandler<Query> };
 
-export interface QueryBus extends Bus<Query, ReadModel> {
-  registerQueryHandlers(queryHandler: QueryHandlers): QueryBus;
-}
+export interface QueryBus extends Bus<Query, ReadModel> {}
