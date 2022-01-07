@@ -1,5 +1,5 @@
 import { DomainEvent } from './DomainEvent';
 
-export interface EventMiddleware {
+export interface EventBusMiddleware {
   reactTo(event: DomainEvent): void;
 }

@@ -4,10 +4,9 @@ import { SerializedDomainEvent } from '../../src/eventBus/types/SerializedDomain
 import { InternalEventBus } from '../../src/eventBus/InternalEventBus';
 import { EventNotHandledError } from '../../src/eventBus/EventNotHandledError';
 import { EventHandler } from '../../src/eventBus/types/EventHandler';
-import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { EventMiddleware } from '../../src/eventBus/types/EventMiddleware';
+import { instance, mock, verify, when } from 'ts-mockito';
+import { EventBusMiddleware } from '../../src/eventBus/types/EventBusMiddleware';
 import { BusLogger } from '../../src/common/BusLogger';
-import exp = require('constants');
 
 t.mochaGlobals();
 
@@ -107,8 +106,8 @@ describe('Internal Event Bus', () => {
       context('some middlewares are registered', () => {
         it('chains middlewares based on registration order', () => {
           // GIVEN
-          const firstEventMiddleware = mock<EventMiddleware>();
-          const secondEventMiddleware = mock<EventMiddleware>();
+          const firstEventMiddleware = mock<EventBusMiddleware>();
+          const secondEventMiddleware = mock<EventBusMiddleware>();
 
           const eventHandlers = {
             [DummyEvent.name]: [instance(dummyEventEventHandler)]

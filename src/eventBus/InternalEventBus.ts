@@ -1,13 +1,13 @@
 import { DomainEvent } from './types/DomainEvent';
 import { EventBus, EventHandlers } from './types/EventBus';
-import { EventMiddleware } from './types/EventMiddleware';
+import { EventBusMiddleware } from './types/EventBusMiddleware';
 import { EventNotHandledError } from './EventNotHandledError';
 import { BusLogger } from '../common/BusLogger';
 import { EventHandler } from './types/EventHandler';
 
 export class InternalEventBus implements EventBus {
   private eventsHandlers: EventHandlers = {};
-  private eventMiddlewares: EventMiddleware[] = [];
+  private eventMiddlewares: EventBusMiddleware[] = [];
 
   constructor(private logger: BusLogger) {}
 
@@ -16,7 +16,7 @@ export class InternalEventBus implements EventBus {
     return this;
   }
 
-  registerMiddlewares(eventMiddlewares: EventMiddleware[]): EventBus {
+  registerMiddlewares(eventMiddlewares: EventBusMiddleware[]): EventBus {
     this.eventMiddlewares = eventMiddlewares;
     return this;
   }

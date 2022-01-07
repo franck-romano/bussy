@@ -1,8 +1,8 @@
-import { EventMiddleware } from '../types/EventMiddleware';
+import { EventBusMiddleware } from '../types/EventBusMiddleware';
 import { DomainEvent } from '../types/DomainEvent';
 import { BusLogger } from '../../common/BusLogger';
 
-export class DefaultEventBusLoggingMiddleware implements EventMiddleware {
+export class LoggingEventBusMiddleware implements EventBusMiddleware {
   constructor(private logger: BusLogger) {}
 
   reactTo(event: DomainEvent): void {

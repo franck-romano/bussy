@@ -1,5 +1,5 @@
 import { EventHandler } from './EventHandler';
-import { EventMiddleware } from './EventMiddleware';
+import { EventBusMiddleware } from './EventBusMiddleware';
 import { Bus } from '../../common/Bus';
 import { DomainEvent } from './DomainEvent';
 
@@ -10,5 +10,5 @@ export interface EventBus extends Bus<DomainEvent, void> {
 
   registerEventHandlers(eventHandlers: EventHandlers): EventBus;
 
-  registerMiddlewares(middlewares: EventMiddleware[]): EventBus;
+  registerMiddlewares(middlewares: EventBusMiddleware[]): EventBus;
 }
