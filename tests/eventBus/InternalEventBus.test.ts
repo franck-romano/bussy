@@ -4,8 +4,10 @@ import { SerializedDomainEvent } from '../../src/eventBus/types/SerializedDomain
 import { InternalEventBus } from '../../src/eventBus/InternalEventBus';
 import { EventNotHandledError } from '../../src/eventBus/EventNotHandledError';
 import { EventHandler } from '../../src/eventBus/types/EventHandler';
-import { instance, mock, verify } from 'ts-mockito';
+import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { EventMiddleware } from '../../src/eventBus/types/EventMiddleware';
+import { BusLogger } from '../../src/common/BusLogger';
+import exp = require('constants');
 
 t.mochaGlobals();
 
@@ -29,50 +31,76 @@ describe('Internal Event Bus', () => {
   }
 
   describe('.publish()', () => {
+    const event = new DummyEvent();
+    const otherEvent = new OtherDummyEvent();
+
+    let logger: BusLogger;
+    let internalEventBus: InternalEventBus;
+    let dummyEventEventHandler: EventHandler<DummyEvent>;
+
+    beforeEach(() => {
+      logger = mock<BusLogger>();
+      internalEventBus = new InternalEventBus(instance(logger));
+      dummyEventEventHandler = mock<EventHandler<DummyEvent>>();
+      when(dummyEventEventHandler.reactTo(event)).thenResolve();
+      when(dummyEventEventHandler.reactTo(otherEvent)).thenResolve();
+    });
+
     context('no event handlers are registered for the event', () => {
       it('raises an error', () => {
-        // GIVEN
-        const event = new DummyEvent();
-
-        // WHEN & THEN
-        t.throws(() => new InternalEventBus().publish([event]), new EventNotHandledError(event.label()));
+        t.throws(() => internalEventBus.publish([event]), new EventNotHandledError(event.label()));
       });
     });
 
     context('event handlers are registered for some events', () => {
-      const event = new DummyEvent();
-      const otherEvent = new OtherDummyEvent();
-
       it('calls the corresponding event handlers', () => {
         // GIVEN
-        const eventHandler = mock<EventHandler<DummyEvent>>();
         const eventHandlers = {
-          [DummyEvent.name]: [instance(eventHandler)],
-          [OtherDummyEvent.name]: [instance(eventHandler)]
+          [DummyEvent.name]: [instance(dummyEventEventHandler)],
+          [OtherDummyEvent.name]: [instance(dummyEventEventHandler)]
         };
 
         // WHEN
-        new InternalEventBus().registerEventHandlers(eventHandlers).publish([event, otherEvent]);
+        internalEventBus.registerEventHandlers(eventHandlers).publish([event, otherEvent]);
 
         // THEN
-        verify(eventHandler.reactTo(event)).once();
-        verify(eventHandler.reactTo(otherEvent)).once();
+        verify(dummyEventEventHandler.reactTo(event)).once();
+        verify(dummyEventEventHandler.reactTo(otherEvent)).once();
+      });
+
+      context('event handler has failed', () => {
+        it('does not throw the error', () => {
+          // GIVEN
+          const error = new Error();
+          const eventHandlers = {
+            [DummyEvent.name]: [instance(dummyEventEventHandler)]
+          };
+
+          when(dummyEventEventHandler.reactTo(event)).thenReject(error);
+
+          // WHEN
+          try {
+            internalEventBus.registerEventHandlers(eventHandlers).publish([event]);
+          } catch (error) {
+            // THEN
+            t.equal(error, null);
+          }
+        });
       });
 
       context('sames event is published twice', () => {
         it('calls the corresponding event handlers twice', () => {
           // GIVEN
-          const eventHandler = mock<EventHandler<DummyEvent>>();
           const eventHandlers = {
-            [DummyEvent.name]: [instance(eventHandler)],
-            [OtherDummyEvent.name]: [instance(eventHandler)]
+            [DummyEvent.name]: [instance(dummyEventEventHandler)],
+            [OtherDummyEvent.name]: [instance(dummyEventEventHandler)]
           };
 
           // WHEN
-          new InternalEventBus().registerEventHandlers(eventHandlers).publish([event, event]);
+          internalEventBus.registerEventHandlers(eventHandlers).publish([event, event]);
 
           // THEN
-          verify(eventHandler.reactTo(event)).twice();
+          verify(dummyEventEventHandler.reactTo(event)).twice();
         });
       });
 
@@ -82,12 +110,11 @@ describe('Internal Event Bus', () => {
           const firstEventMiddleware = mock<EventMiddleware>();
           const secondEventMiddleware = mock<EventMiddleware>();
 
-          const eventHandler = mock<EventHandler<DummyEvent>>();
           const eventHandlers = {
-            [DummyEvent.name]: [instance(eventHandler)]
+            [DummyEvent.name]: [instance(dummyEventEventHandler)]
           };
 
-          const eventBus = new InternalEventBus()
+          const eventBus = internalEventBus
             .registerEventHandlers(eventHandlers)
             .registerMiddlewares([instance(firstEventMiddleware), instance(secondEventMiddleware)]);
 
