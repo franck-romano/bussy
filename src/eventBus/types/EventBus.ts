@@ -6,7 +6,7 @@ import { DomainEvent } from './DomainEvent';
 export type EventHandlers = { [event: string]: EventHandler<DomainEvent>[] };
 
 export interface EventBus extends Bus<DomainEvent, void> {
-  publish(events: DomainEvent[]): void;
+  publish(events: Readonly<DomainEvent[]>): void;
 
   registerEventHandlers(eventHandlers: EventHandlers): EventBus;
 
