@@ -1,10 +1,10 @@
 import t from 'tap';
 import { Query } from '../../src/queryBus/types/Query';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { LoggingQueryBusMiddleware } from '../../src/queryBus/middlewares/LoggingQueryBusMiddleware';
-import { QueryMiddleware } from '../../src/queryBus/types/QueryMiddleware';
+import { QueryMiddlewareHandler } from '../../src/queryBus/types/QueryMiddleware';
 import { BusLogger } from '../../src/common/BusLogger';
 import { ReadModel } from '../../src/queryBus/types/ReadModel';
+import { LoggingQueryBusMiddleware } from '../../src/queryBus/middlewares/LoggingQueryBusMiddleware';
 
 t.mochaGlobals();
 
@@ -20,14 +20,14 @@ describe('Logging Query Bus Middleware', () => {
       it('propagates the error', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<QueryMiddleware>();
+        const middleware = mock<QueryMiddlewareHandler>();
 
         const expected = new Error();
         when(middleware.handle(query)).thenReject(expected);
 
         try {
           // WHEN
-          await new LoggingQueryBusMiddleware(instance(middleware), instance(logger)).handle(query);
+          await new LoggingQueryBusMiddleware(instance(logger)).chainWith(middleware).handle(query);
         } catch (error) {
           // THEN
           verify(logger.info(`Executing query ${query.label()}`, deepEqual({ query }))).once();
@@ -40,7 +40,7 @@ describe('Logging Query Bus Middleware', () => {
       it('returns the result', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<QueryMiddleware>();
+        const middleware = mock<QueryMiddlewareHandler>();
 
         class TestReadModel implements ReadModel {}
 
@@ -48,7 +48,7 @@ describe('Logging Query Bus Middleware', () => {
         when(middleware.handle(query)).thenResolve(expected);
 
         // WHEN
-        await new LoggingQueryBusMiddleware(instance(middleware), instance(logger)).handle(query);
+        await new LoggingQueryBusMiddleware(instance(logger)).chainWith(instance(middleware)).handle(query);
 
         // THEN
         verify(logger.info(`Executing query ${query.label()}`, deepEqual({ query }))).once();

@@ -1,10 +1,10 @@
 import { QueryBus } from './types/QueryBus';
 import { Query } from './types/Query';
 import { ReadModel } from './types/ReadModel';
-import { QueryMiddleware } from './types/QueryMiddleware';
+import { QueryMiddlewareHandler } from './types/QueryMiddleware';
 
 export class InternalQueryBus implements QueryBus {
-  constructor(private middlewareChain: QueryMiddleware) {}
+  constructor(private middlewareChain: QueryMiddlewareHandler) {}
 
   async publish(query: Query): Promise<ReadModel> {
     return this.middlewareChain.handle(query);
