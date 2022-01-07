@@ -1,7 +1,7 @@
 import t from 'tap';
 import { Query } from '../../src/queryBus/types/Query';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
-import { QueryMiddlewareHandler } from '../../src/queryBus/middlewares/QueryMiddleware';
+import { ChainableQueryMiddleware } from '../../src/queryBus/middlewares/QueryMiddleware';
 import { BusLogger } from '../../src/common/BusLogger';
 import { ReadModel } from '../../src/queryBus/types/ReadModel';
 import { LoggingQueryBusMiddleware } from '../../src/queryBus/middlewares/LoggingQueryBusMiddleware';
@@ -20,7 +20,7 @@ describe('Logging Query Bus Middleware', () => {
       it('propagates the error', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<QueryMiddlewareHandler>();
+        const middleware = mock<ChainableQueryMiddleware>();
 
         const expected = new Error();
         when(middleware.handle(query)).thenReject(expected);
@@ -40,7 +40,7 @@ describe('Logging Query Bus Middleware', () => {
       it('returns the result', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<QueryMiddlewareHandler>();
+        const middleware = mock<ChainableQueryMiddleware>();
 
         class TestReadModel implements ReadModel {}
 

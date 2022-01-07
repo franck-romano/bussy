@@ -1,6 +1,6 @@
 import t from 'tap';
 import { instance, mock, when } from 'ts-mockito';
-import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
+import { ChainableCommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { Command } from '../../src/commandBus/types/Command';
 import { InternalCommandBus } from '../../src/commandBus/InternalCommandBus';
 
@@ -15,7 +15,7 @@ describe('Internal Command Bus', () => {
       }
 
       const command = new TestCommand();
-      const middlewareChain = mock<CommandMiddlewareHandler>();
+      const middlewareChain = mock<ChainableCommandMiddlewareHandler>();
       const expected = {
         events: [],
         result: null

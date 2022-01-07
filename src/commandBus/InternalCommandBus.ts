@@ -1,10 +1,10 @@
 import { Command } from './types/Command';
 import { CommandBus } from './types/CommandBus';
 import { CommandResponse } from './types/CommandResponse';
-import { CommandMiddlewareHandler } from './middlewares/CommandMiddleware';
+import { ChainableCommandMiddlewareHandler } from './middlewares/CommandMiddleware';
 
 export class InternalCommandBus implements CommandBus {
-  constructor(private middlewareChain: CommandMiddlewareHandler) {}
+  constructor(private middlewareChain: ChainableCommandMiddlewareHandler) {}
 
   async publish(command: Command): Promise<CommandResponse> {
     return this.middlewareChain.handle(command);

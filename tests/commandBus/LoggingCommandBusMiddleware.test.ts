@@ -2,7 +2,7 @@ import t from 'tap';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { BusLogger } from '../../src/common/BusLogger';
 import { Command } from '../../src/commandBus/types/Command';
-import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
+import { ChainableCommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { LoggingCommandBusMiddleware } from '../../src/commandBus/middlewares/LoggingCommandBusMiddleware';
 
 t.mochaGlobals();
@@ -19,7 +19,7 @@ describe('Logging Command Bus Middleware', () => {
       it('propagates the error', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<CommandMiddlewareHandler>();
+        const middleware = mock<ChainableCommandMiddlewareHandler>();
 
         const expected = new Error();
         when(middleware.handle(command)).thenReject(expected);
@@ -39,7 +39,7 @@ describe('Logging Command Bus Middleware', () => {
       it('returns the result', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<CommandMiddlewareHandler>();
+        const middleware = mock<ChainableCommandMiddlewareHandler>();
 
         when(middleware.handle(command)).thenResolve({ events: [], result: null });
 

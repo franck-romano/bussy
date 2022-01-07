@@ -1,7 +1,7 @@
 import t from 'tap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { Command } from '../../src/commandBus/types/Command';
-import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
+import { ChainableCommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { EventBus } from '../../src/eventBus/types/EventBus';
 import { EventDispatcherMiddleware } from '../../src/commandBus/middlewares/EventDispatcherMiddleware';
 import { DomainEvent } from '../../src/eventBus/types/DomainEvent';
@@ -29,7 +29,7 @@ describe('Event Dispatcher Middleware', () => {
     it('executes the command and publish the events', async () => {
       // GIVEN
       const eventBus = mock<EventBus>();
-      const middleware = mock<CommandMiddlewareHandler>();
+      const middleware = mock<ChainableCommandMiddlewareHandler>();
 
       const events = [new DummyEvent()];
       when(middleware.handle(command)).thenResolve({ events, result: null });

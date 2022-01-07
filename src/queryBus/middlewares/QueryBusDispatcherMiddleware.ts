@@ -2,12 +2,12 @@ import { QueryHandlers } from '../types/QueryBus';
 import { Query } from '../types/Query';
 import { ReadModel } from '../types/ReadModel';
 import { QueryNotHandledError } from '../types/QueryNotHandledError';
-import { QueryMiddleware, QueryMiddlewareHandler } from './QueryMiddleware';
+import { QueryMiddleware, ChainableQueryMiddleware } from './QueryMiddleware';
 
 export class QueryBusDispatcherMiddleware implements QueryMiddleware {
   constructor(private queryHandlers: QueryHandlers) {}
 
-  chainWith(): QueryMiddlewareHandler {
+  chainWith(): ChainableQueryMiddleware {
     return {
       handle: async (query: Query): Promise<ReadModel> => {
         const queryName = query.label();

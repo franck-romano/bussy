@@ -1,12 +1,12 @@
 import { BusLogger } from '../../common/BusLogger';
-import { CommandMiddleware, CommandMiddlewareHandler } from './CommandMiddleware';
+import { CommandMiddleware, ChainableCommandMiddlewareHandler } from './CommandMiddleware';
 import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 
 export class LoggingCommandBusMiddleware implements CommandMiddleware {
   constructor(private logger: BusLogger) {}
 
-  chainWith(nextMiddleware: CommandMiddlewareHandler): CommandMiddlewareHandler {
+  chainWith(nextMiddleware: ChainableCommandMiddlewareHandler): ChainableCommandMiddlewareHandler {
     return {
       handle: async (command: Command): Promise<CommandResponse> => {
         this.logger.info(`Executing command ${command.label()}`, { command });
