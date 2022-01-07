@@ -2,7 +2,7 @@ import t from 'tap';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { BusLogger } from '../../src/common/BusLogger';
 import { Command } from '../../src/commandBus/types/Command';
-import { CommandMiddlewareHandler } from '../../src/commandBus/types/CommandMiddleware';
+import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { LoggingCommandBusMiddleware } from '../../src/commandBus/middlewares/LoggingCommandBusMiddleware';
 
 t.mochaGlobals();

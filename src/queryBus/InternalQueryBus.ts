@@ -1,7 +1,7 @@
 import { QueryBus } from './types/QueryBus';
 import { Query } from './types/Query';
 import { ReadModel } from './types/ReadModel';
-import { QueryMiddlewareHandler } from './types/QueryMiddleware';
+import { QueryMiddlewareHandler } from './middlewares/QueryMiddleware';
 
 export class InternalQueryBus implements QueryBus {
   constructor(private middlewareChain: QueryMiddlewareHandler) {}

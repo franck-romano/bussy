@@ -1,4 +1,4 @@
-import { CommandMiddleware, CommandMiddlewareHandler } from '../types/CommandMiddleware';
+import { CommandMiddleware, CommandMiddlewareHandler } from './CommandMiddleware';
 import { CommandHandlers } from '../types/CommandBus';
 import { CommandNotHandledError } from '../types/CommandNotHandledError';
 import { CommandResponse } from '../types/CommandResponse';

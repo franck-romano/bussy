@@ -1,5 +1,5 @@
 import { BusLogger } from '../../common/BusLogger';
-import { CommandMiddleware, CommandMiddlewareHandler } from '../types/CommandMiddleware';
+import { CommandMiddleware, CommandMiddlewareHandler } from './CommandMiddleware';
 import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 

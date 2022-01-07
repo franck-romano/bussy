@@ -1,7 +1,7 @@
 import t from 'tap';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { Command } from '../../src/commandBus/types/Command';
-import { CommandMiddlewareHandler } from '../../src/commandBus/types/CommandMiddleware';
+import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { EventBus } from '../../src/eventBus/types/EventBus';
 import { EventDispatcherMiddleware } from '../../src/commandBus/middlewares/EventDispatcherMiddleware';
 import { DomainEvent } from '../../src/eventBus/types/DomainEvent';

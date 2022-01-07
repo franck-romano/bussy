@@ -1,5 +1,5 @@
 import { ReadModel } from '../types/ReadModel';
-import { QueryMiddleware, QueryMiddlewareHandler } from '../types/QueryMiddleware';
+import { QueryMiddleware, QueryMiddlewareHandler } from './QueryMiddleware';
 import { BusLogger } from '../../common/BusLogger';
 import { Query } from '../types/Query';
 

@@ -1,6 +1,6 @@
 import t from 'tap';
 import { instance, mock, when } from 'ts-mockito';
-import { CommandMiddlewareHandler } from '../../src/commandBus/types/CommandMiddleware';
+import { CommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { Command } from '../../src/commandBus/types/Command';
 import { InternalCommandBus } from '../../src/commandBus/InternalCommandBus';
 

@@ -2,7 +2,7 @@ import t from 'tap';
 import { Query } from '../../src/queryBus/types/Query';
 import { InternalQueryBus } from '../../src/queryBus/InternalQueryBus';
 import { instance, mock, when } from 'ts-mockito';
-import { QueryMiddlewareHandler } from '../../src/queryBus/types/QueryMiddleware';
+import { QueryMiddlewareHandler } from '../../src/queryBus/middlewares/QueryMiddleware';
 import { ReadModel } from '../../src/queryBus/types/ReadModel';
 
 t.mochaGlobals();

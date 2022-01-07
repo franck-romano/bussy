@@ -1,4 +1,4 @@
-import { CommandMiddleware, CommandMiddlewareHandler } from '../types/CommandMiddleware';
+import { CommandMiddleware, CommandMiddlewareHandler } from './CommandMiddleware';
 import { EventBus } from '../../eventBus/types/EventBus';
 
 export class EventDispatcherMiddleware implements CommandMiddleware {

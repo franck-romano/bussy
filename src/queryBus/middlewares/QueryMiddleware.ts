@@ -1,5 +1,5 @@
-import { ReadModel } from './ReadModel';
-import { Query } from './Query';
+import { ReadModel } from '../types/ReadModel';
+import { Query } from '../types/Query';
 
 export interface QueryMiddlewareHandler {
   handle: (query: Query) => Promise<ReadModel>;
