@@ -1,76 +1,32 @@
 import t from 'tap';
 import { instance, mock, when } from 'ts-mockito';
+import { CommandMiddleware } from '../../src/commandBus/types/CommandMiddleware';
 import { Command } from '../../src/commandBus/types/Command';
 import { InternalCommandBus } from '../../src/commandBus/InternalCommandBus';
-import { DomainEvent } from '../../src/eventBus/types/DomainEvent';
-import { SerializedDomainEvent } from '../../src/eventBus/types/SerializedDomainEvent';
-import { CommandHandler } from '../../src/commandBus/types/CommandHandler';
-import { CommandNotHandledError } from '../../src/commandBus/types/CommandNotHandledError';
 
 t.mochaGlobals();
 
 describe('Internal Command Bus', () => {
   describe('.publish()', () => {
-    context('no command handler is registered for the command', () => {
-      it('raises an error', () => {
-        // GIVEN
-        class NotHandledCommand implements Command {
-          label = () => NotHandledCommand.name;
-        }
+    it('triggers middlewares chain', async () => {
+      // GIVEN
+      class TestCommand implements Command {
+        label = () => TestCommand.name;
+      }
 
-        const command = new NotHandledCommand();
+      const command = new TestCommand();
+      const middlewareChain = mock<CommandMiddleware>();
+      const expected = {
+        events: [],
+        result: null
+      };
+      when(middlewareChain.handle(command)).thenResolve(expected);
 
-        // WHEN
-        const publish = new InternalCommandBus().publish(command);
+      // WHEN
+      const actual = await new InternalCommandBus(instance(middlewareChain)).publish(command);
 
-        // WHEN
-        t.rejects(() => publish, new CommandNotHandledError(command.label()));
-      });
-    });
-
-    context('a command handler is registered for the command', () => {
-      it('returns the results', async () => {
-        // GIVEN
-        class HandledCommand implements Command {
-          label = () => HandledCommand.name;
-        }
-
-        class TestDomainEvent implements DomainEvent {
-          private readonly _occurredOn: Date;
-
-          constructor() {
-            this._occurredOn = new Date();
-          }
-
-          label(): string {
-            return TestDomainEvent.name;
-          }
-
-          occurredOn(): Date {
-            return this._occurredOn;
-          }
-
-          serialize(): SerializedDomainEvent {
-            return { data: {}, occurredOn: this.occurredOn().toISOString() };
-          }
-        }
-
-        const command = new HandledCommand();
-        const commandHandler = mock<CommandHandler<HandledCommand>>();
-        const expected = [new TestDomainEvent()];
-
-        // WHEN
-        when(commandHandler.handle(command)).thenResolve(expected);
-
-        const actual = await new InternalCommandBus()
-          .registerCommandHandlers({
-            [HandledCommand.name]: instance(commandHandler)
-          })
-          .publish(command);
-
-        // WHEN
-        t.equal(actual, expected);
-      });
+      // THEN
+      t.equal(actual, expected);
     });
   });
 });

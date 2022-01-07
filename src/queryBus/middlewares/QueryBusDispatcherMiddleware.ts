@@ -10,10 +10,13 @@ export class QueryBusDispatcherMiddleware extends QueryMiddleware {
   }
 
   async handle(query: Query): Promise<ReadModel> {
-    const queryHandler = this.queryHandlers[query.label()];
+    const queryName = query.label();
+    const queryHandler = this.queryHandlers[queryName];
+
     if (!queryHandler) {
-      throw new QueryNotHandledError(query.label());
+      throw new QueryNotHandledError(queryName);
     }
+
     return queryHandler.handle(query);
   }
 }

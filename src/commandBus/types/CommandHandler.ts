@@ -1,7 +1,8 @@
-import { DomainEvent } from '../../eventBus/types/DomainEvent';
+import { CommandResponse } from './CommandResponse';
+import { Command } from './Command';
 
-export interface CommandHandler<Command> {
+export interface CommandHandler<COMMAND extends Command> {
   name(): string;
 
-  handle(command: Command): Promise<Readonly<DomainEvent[]>>;
+  handle(command: COMMAND): Promise<CommandResponse>;
 }

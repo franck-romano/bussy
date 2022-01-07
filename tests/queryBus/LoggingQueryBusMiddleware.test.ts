@@ -8,7 +8,7 @@ import { ReadModel } from '../../src/queryBus/types/ReadModel';
 
 t.mochaGlobals();
 
-describe('Logging Query Dispatcher Middleware', () => {
+describe('Logging Query Bus Middleware', () => {
   describe('.handle()', () => {
     class TestQuery implements Query {
       label = () => TestQuery.name;
