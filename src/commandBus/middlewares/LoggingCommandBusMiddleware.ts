@@ -3,10 +3,8 @@ import { CommandMiddleware } from '../types/CommandMiddleware';
 import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 
-export class LoggingCommandBusMiddleware extends CommandMiddleware {
-  constructor(private nextMiddleware: CommandMiddleware, private logger: BusLogger) {
-    super();
-  }
+export class LoggingCommandBusMiddleware implements CommandMiddleware {
+  constructor(private nextMiddleware: CommandMiddleware, private logger: BusLogger) {}
 
   async handle(command: Command): Promise<CommandResponse> {
     this.logger.info(`Executing command ${command.label()}`, { command });

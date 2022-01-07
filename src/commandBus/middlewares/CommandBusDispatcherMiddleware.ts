@@ -4,10 +4,8 @@ import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 import { CommandNotHandledError } from '../types/CommandNotHandledError';
 
-export class CommandBusDispatcherMiddleware extends CommandMiddleware {
-  constructor(private commandHandlers: CommandHandlers) {
-    super();
-  }
+export class CommandBusDispatcherMiddleware implements CommandMiddleware {
+  constructor(private commandHandlers: CommandHandlers) {}
 
   async handle(command: Command): Promise<CommandResponse> {
     const commandName = command.label();

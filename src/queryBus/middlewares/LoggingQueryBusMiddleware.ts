@@ -3,10 +3,8 @@ import { ReadModel } from '../types/ReadModel';
 import { QueryMiddleware } from '../types/QueryMiddleware';
 import { BusLogger } from '../../common/BusLogger';
 
-export class LoggingQueryBusMiddleware extends QueryMiddleware {
-  constructor(private nextMiddleware: QueryMiddleware, private logger: BusLogger) {
-    super();
-  }
+export class LoggingQueryBusMiddleware implements QueryMiddleware {
+  constructor(private nextMiddleware: QueryMiddleware, private logger: BusLogger) {}
 
   async handle(query: Query): Promise<ReadModel> {
     this.logger.info(`Executing query ${query.label()}`, { query });
