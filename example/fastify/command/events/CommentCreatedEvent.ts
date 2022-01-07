@@ -1,5 +1,5 @@
-import { DomainEvent } from '../../../src/eventBus/types/DomainEvent';
-import { SerializedDomainEvent } from '../../../src/eventBus/types/SerializedDomainEvent';
+import { DomainEvent } from '../../../../src/eventBus/types/DomainEvent';
+import { SerializedDomainEvent } from '../../../../src/eventBus/types/SerializedDomainEvent';
 
 export class CommentCreatedEvent implements DomainEvent {
   constructor(public commentContent: string) {}

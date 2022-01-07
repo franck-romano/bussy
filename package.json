@@ -8,8 +8,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "test": "tap --ts --reporter=spec tests/**/*.test.ts",
-    "test:watch": "tap -w --ts --reporter=spec tests/**/*.test.ts",
+    "test": "tap --no-coverage --ts --reporter=spec tests/**/*.test.ts",
+    "test:watch": "tap --no-coverage -w --ts --reporter=spec tests/**/*.test.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -32,6 +32,7 @@
     "@types/node": "14.11.2",
     "@types/tap": "15.0.5",
     "cz-conventional-changelog": "3.3.0",
+    "fastify": "^3.25.3",
     "gts": "3.1.0",
     "husky": "7.0.4",
     "tap": "15.1.6",
