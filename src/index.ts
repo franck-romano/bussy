@@ -1,7 +1,11 @@
 import { InternalEventBus } from './eventBus/InternalEventBus';
 import { InternalCommandBus } from './commandBus/InternalCommandBus';
 import { InternalQueryBus } from './queryBus/InternalQueryBus';
+import { DefaultEventBusLoggingMiddleware } from './eventBus/middlewares/DefaultEventBusLoggingMiddleware';
+import { PinoLogger } from './common/BusLogger';
 
-export const EventBus = new InternalEventBus();
+const logger = new PinoLogger();
+
+export const EventBus = new InternalEventBus().registerMiddlewares([new DefaultEventBusLoggingMiddleware(logger)]);
 export const QueryBus = new InternalCommandBus();
 export const CommandBus = new InternalQueryBus();
