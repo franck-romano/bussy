@@ -2,7 +2,7 @@ import t from 'tap';
 import { DomainEvent } from '../../src/eventBus/types/DomainEvent';
 import { SerializedDomainEvent } from '../../src/eventBus/types/SerializedDomainEvent';
 import { InternalEventBus } from '../../src/eventBus/InternalEventBus';
-import { EventNotHandledError } from '../../src/eventBus/EventNotHandledError';
+import { EventNotHandledError } from '../../src/eventBus/types/EventNotHandledError';
 import { EventHandler } from '../../src/eventBus/types/EventHandler';
 import { instance, mock, verify, when } from 'ts-mockito';
 import { EventBusMiddleware } from '../../src/eventBus/middlewares/EventBusMiddleware';

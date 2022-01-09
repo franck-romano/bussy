@@ -1,7 +1,7 @@
 import { DomainEvent } from './types/DomainEvent';
 import { EventBus, EventHandlers } from './types/EventBus';
 import { EventBusMiddleware } from './middlewares/EventBusMiddleware';
-import { EventNotHandledError } from './EventNotHandledError';
+import { EventNotHandledError } from './types/EventNotHandledError';
 import { BusLogger } from '../common/BusLogger';
 import { EventHandler } from './types/EventHandler';
 
