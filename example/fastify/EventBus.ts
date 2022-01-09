@@ -4,6 +4,6 @@ import { LoggingEventBusMiddleware } from '../../src/eventBus/middlewares/Loggin
 import { CommentCreatedEvent } from './command/events/CommentCreatedEvent';
 import { CommentCreatedEventHandler } from './command/events/CommentCreatedEventHandler';
 
-export const eventBus = new EventBus(logger)
-  .registerMiddlewares([new LoggingEventBusMiddleware(logger)])
-  .registerEventHandlers({ [CommentCreatedEvent.name]: [new CommentCreatedEventHandler()] });
+export const eventBus = new EventBus(logger, [new LoggingEventBusMiddleware(logger)], {
+  [CommentCreatedEvent.name]: [new CommentCreatedEventHandler()]
+});

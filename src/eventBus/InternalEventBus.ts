@@ -1,35 +1,26 @@
 import { DomainEvent } from './types/DomainEvent';
 import { EventBus, EventHandlers } from './types/EventBus';
-import { EventBusMiddleware } from './types/EventBusMiddleware';
+import { EventBusMiddleware } from './middlewares/EventBusMiddleware';
 import { EventNotHandledError } from './EventNotHandledError';
 import { BusLogger } from '../common/BusLogger';
 import { EventHandler } from './types/EventHandler';
 
 export class InternalEventBus implements EventBus {
-  private eventsHandlers: EventHandlers = {};
-  private eventMiddlewares: EventBusMiddleware[] = [];
-
-  constructor(private logger: BusLogger) {}
-
-  registerEventHandlers(eventHandlers: EventHandlers): EventBus {
-    this.eventsHandlers = eventHandlers;
-    return this;
-  }
-
-  registerMiddlewares(eventMiddlewares: EventBusMiddleware[]): EventBus {
-    this.eventMiddlewares = eventMiddlewares;
-    return this;
-  }
+  constructor(
+    private logger: BusLogger,
+    private eventMiddlewares: EventBusMiddleware[],
+    private eventHandlers: EventHandlers
+  ) {}
 
   publish(events: Readonly<DomainEvent>[]): void {
     events.reduce((domainEvents, event) => {
-      const correspondingEventHandlers = this.eventsHandlers[event.label()];
+      const correspondingEventHandlers = this.eventHandlers[event.label()];
 
       if (!correspondingEventHandlers) {
         throw new EventNotHandledError(event.label());
       }
 
-      this.eventMiddlewares.forEach((middleware) => middleware.reactTo(event));
+      this.eventMiddlewares.forEach((middleware) => middleware.handle(event));
 
       Promise.allSettled(
         correspondingEventHandlers.map((eventHandler) => {

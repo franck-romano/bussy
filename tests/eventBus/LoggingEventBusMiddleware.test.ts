@@ -24,7 +24,7 @@ describe('Logging Query Bus Middleware', () => {
       const logger = mock<BusLogger>();
 
       // WHEN
-      new LoggingEventBusMiddleware(instance(logger)).reactTo(dummyEvent);
+      new LoggingEventBusMiddleware(instance(logger)).handle(dummyEvent);
 
       // THEN
       verify(logger.info(`Processing domain event ${dummyEvent.label()}`, deepEqual(dummyEvent.serialize()))).once();

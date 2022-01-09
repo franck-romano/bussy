@@ -5,7 +5,7 @@ import { InternalEventBus } from '../../src/eventBus/InternalEventBus';
 import { EventNotHandledError } from '../../src/eventBus/EventNotHandledError';
 import { EventHandler } from '../../src/eventBus/types/EventHandler';
 import { instance, mock, verify, when } from 'ts-mockito';
-import { EventBusMiddleware } from '../../src/eventBus/types/EventBusMiddleware';
+import { EventBusMiddleware } from '../../src/eventBus/middlewares/EventBusMiddleware';
 import { BusLogger } from '../../src/common/BusLogger';
 
 t.mochaGlobals();
@@ -34,12 +34,10 @@ describe('Internal Event Bus', () => {
     const otherEvent = new OtherDummyEvent();
 
     let logger: BusLogger;
-    let internalEventBus: InternalEventBus;
     let dummyEventEventHandler: EventHandler<DummyEvent>;
 
     beforeEach(() => {
       logger = mock<BusLogger>();
-      internalEventBus = new InternalEventBus(instance(logger));
       dummyEventEventHandler = mock<EventHandler<DummyEvent>>();
       when(dummyEventEventHandler.reactTo(event)).thenResolve();
       when(dummyEventEventHandler.reactTo(otherEvent)).thenResolve();
@@ -47,7 +45,7 @@ describe('Internal Event Bus', () => {
 
     context('no event handlers are registered for the event', () => {
       it('raises an error', () => {
-        t.throws(() => internalEventBus.publish([event]), new EventNotHandledError(event.label()));
+        t.throws(() => new InternalEventBus(logger, [], {}).publish([event]), new EventNotHandledError(event.label()));
       });
     });
 
@@ -60,7 +58,7 @@ describe('Internal Event Bus', () => {
         };
 
         // WHEN
-        internalEventBus.registerEventHandlers(eventHandlers).publish([event, otherEvent]);
+        new InternalEventBus(instance(logger), [], eventHandlers).publish([event, otherEvent]);
 
         // THEN
         verify(dummyEventEventHandler.reactTo(event)).once();
@@ -79,7 +77,7 @@ describe('Internal Event Bus', () => {
 
           // WHEN
           try {
-            internalEventBus.registerEventHandlers(eventHandlers).publish([event]);
+            new InternalEventBus(instance(logger), [], eventHandlers).publish([event]);
           } catch (error) {
             // THEN
             t.equal(error, null);
@@ -96,7 +94,7 @@ describe('Internal Event Bus', () => {
           };
 
           // WHEN
-          internalEventBus.registerEventHandlers(eventHandlers).publish([event, event]);
+          new InternalEventBus(instance(logger), [], eventHandlers).publish([event, event]);
 
           // THEN
           verify(dummyEventEventHandler.reactTo(event)).twice();
@@ -109,19 +107,16 @@ describe('Internal Event Bus', () => {
           const firstEventMiddleware = mock<EventBusMiddleware>();
           const secondEventMiddleware = mock<EventBusMiddleware>();
 
+          const middlewares = [instance(firstEventMiddleware), instance(secondEventMiddleware)];
           const eventHandlers = {
             [DummyEvent.name]: [instance(dummyEventEventHandler)]
           };
 
-          const eventBus = internalEventBus
-            .registerEventHandlers(eventHandlers)
-            .registerMiddlewares([instance(firstEventMiddleware), instance(secondEventMiddleware)]);
-
           // WHEN
-          eventBus.publish([event]);
+          new InternalEventBus(instance(logger), middlewares, eventHandlers).publish([event]);
 
           // THEN
-          verify(firstEventMiddleware.reactTo(event)).calledBefore(secondEventMiddleware.reactTo(event));
+          verify(firstEventMiddleware.handle(event)).calledBefore(secondEventMiddleware.handle(event));
         });
       });
     });
