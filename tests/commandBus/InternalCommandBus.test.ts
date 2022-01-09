@@ -1,6 +1,6 @@
 import t from 'tap';
 import { instance, mock, when } from 'ts-mockito';
-import { ChainableCommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
+import { CommandMiddleware } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { Command } from '../../src/commandBus/types/Command';
 import { InternalCommandBus } from '../../src/commandBus/InternalCommandBus';
 
@@ -15,15 +15,15 @@ describe('Internal Command Bus', () => {
       }
 
       const command = new TestCommand();
-      const middlewareChain = mock<ChainableCommandMiddlewareHandler>();
+      const middleware = mock<CommandMiddleware>();
       const expected = {
         events: [],
         result: null
       };
-      when(middlewareChain.handle(command)).thenResolve(expected);
+      when(middleware.handle(command)).thenResolve(expected);
 
       // WHEN
-      const actual = await new InternalCommandBus(instance(middlewareChain)).publish(command);
+      const actual = await new InternalCommandBus(instance(middleware)).publish(command);
 
       // THEN
       t.equal(actual, expected);

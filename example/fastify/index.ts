@@ -14,21 +14,19 @@ import { ListCommentsQueryHandler } from './query/ListCommentsQueryHandler';
 
 const server = fastify({ logger: true });
 
-const queryBus = new QueryBus(
-  new LoggingQueryBusMiddleware(logger).chainWith(
-    new QueryBusDispatcherMiddleware({
-      [ListCommentsQuery.name]: new ListCommentsQueryHandler()
-    }).chainWith()
-  )
-);
+const queryBusDispatcherMiddleware = new QueryBusDispatcherMiddleware({
+  [ListCommentsQuery.name]: new ListCommentsQueryHandler()
+});
+const loggingQueryBusMiddleware = new LoggingQueryBusMiddleware(logger, queryBusDispatcherMiddleware);
 
-const commandBus = new CommandBus(
-  new LoggingCommandBusMiddleware(logger).chainWith(
-    new EventDispatcherMiddleware(eventBus).chainWith(
-      new CommandBusDispatcherMiddleware({ [CreateCommentCommand.name]: new CreateCommentCommandHandler() }).chainWith()
-    )
-  )
-);
+const commandBusDispatcherMiddleware = new CommandBusDispatcherMiddleware({
+  [CreateCommentCommand.name]: new CreateCommentCommandHandler()
+});
+const eventDispatcherMiddleware = new EventDispatcherMiddleware(eventBus, commandBusDispatcherMiddleware);
+const loggingCommandBusMiddleware = new LoggingCommandBusMiddleware(logger, eventDispatcherMiddleware);
+
+const queryBus = new QueryBus(loggingQueryBusMiddleware);
+const commandBus = new CommandBus(loggingCommandBusMiddleware);
 
 server.get('/comments', async (request, reply) => {
   return queryBus.publish(new ListCommentsQuery());

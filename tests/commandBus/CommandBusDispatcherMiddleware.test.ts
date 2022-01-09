@@ -21,7 +21,7 @@ describe('Command Dispatcher Middleware', () => {
         const command = new HandledCommand();
 
         // WHEN
-        const publish = new CommandBusDispatcherMiddleware({}).chainWith().handle(command);
+        const publish = new CommandBusDispatcherMiddleware({}).handle(command);
 
         // WHEN
         t.rejects(() => publish, new CommandNotHandledError(command.label()));
@@ -60,9 +60,7 @@ describe('Command Dispatcher Middleware', () => {
         // WHEN
         const actual = await new CommandBusDispatcherMiddleware({
           [HandledCommand.name]: instance(commandHandler)
-        })
-          .chainWith()
-          .handle(command);
+        }).handle(command);
 
         // WHEN
         t.equal(actual, expected);

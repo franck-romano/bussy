@@ -1,10 +1,5 @@
 import { ReadModel } from '../types/ReadModel';
 import { Query } from '../types/Query';
+import { Middleware } from '../../common/Middleware';
 
-export interface ChainableQueryMiddleware {
-  handle: (query: Query) => Promise<ReadModel>;
-}
-
-export interface QueryMiddleware {
-  chainWith(nextMiddleware: ChainableQueryMiddleware): ChainableQueryMiddleware;
-}
+export interface QueryMiddleware extends Middleware<Query, ReadModel> {}

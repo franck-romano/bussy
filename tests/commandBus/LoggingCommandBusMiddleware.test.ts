@@ -2,7 +2,7 @@ import t from 'tap';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { BusLogger } from '../../src/common/BusLogger';
 import { Command } from '../../src/commandBus/types/Command';
-import { ChainableCommandMiddlewareHandler } from '../../src/commandBus/middlewares/CommandMiddleware';
+import { CommandMiddleware } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { LoggingCommandBusMiddleware } from '../../src/commandBus/middlewares/LoggingCommandBusMiddleware';
 
 t.mochaGlobals();
@@ -19,14 +19,14 @@ describe('Logging Command Bus Middleware', () => {
       it('propagates the error', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<ChainableCommandMiddlewareHandler>();
+        const middleware = mock<CommandMiddleware>();
 
         const expected = new Error();
         when(middleware.handle(command)).thenReject(expected);
 
         try {
           // WHEN
-          await new LoggingCommandBusMiddleware(instance(logger)).chainWith(instance(middleware)).handle(command);
+          await new LoggingCommandBusMiddleware(instance(logger), instance(middleware)).handle(command);
         } catch (error) {
           // THEN
           verify(logger.info(`Executing command ${command.label()}`, deepEqual({ command }))).once();
@@ -39,12 +39,12 @@ describe('Logging Command Bus Middleware', () => {
       it('returns the result', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<ChainableCommandMiddlewareHandler>();
+        const middleware = mock<CommandMiddleware>();
 
         when(middleware.handle(command)).thenResolve({ events: [], result: null });
 
         // WHEN
-        await new LoggingCommandBusMiddleware(instance(logger)).chainWith(instance(middleware)).handle(command);
+        await new LoggingCommandBusMiddleware(instance(logger), instance(middleware)).handle(command);
 
         // THEN
         verify(logger.info(`Executing command ${command.label()}`, deepEqual({ command }))).once();

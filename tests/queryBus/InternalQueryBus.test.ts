@@ -2,7 +2,7 @@ import t from 'tap';
 import { Query } from '../../src/queryBus/types/Query';
 import { InternalQueryBus } from '../../src/queryBus/InternalQueryBus';
 import { instance, mock, when } from 'ts-mockito';
-import { ChainableQueryMiddleware } from '../../src/queryBus/middlewares/QueryMiddleware';
+import { QueryMiddleware } from '../../src/queryBus/middlewares/QueryMiddleware';
 import { ReadModel } from '../../src/queryBus/types/ReadModel';
 
 t.mochaGlobals();
@@ -16,7 +16,7 @@ describe('Internal Query Bus', () => {
       }
 
       const query = new TestQuery();
-      const middlewareChain = mock<ChainableQueryMiddleware>();
+      const middlewareChain = mock<QueryMiddleware>();
       const readModel: ReadModel = {};
       when(middlewareChain.handle(query)).thenResolve(readModel);
 
