@@ -12,7 +12,7 @@ export class InternalEventBus implements EventBus {
     private eventHandlers: EventHandlers
   ) {}
 
-  publish(events: Readonly<DomainEvent>[]): void {
+  publish(events: ReadonlyArray<DomainEvent>): void {
     events.reduce((domainEvents, event) => {
       const correspondingEventHandlers = this.eventHandlers[event.label()];
 

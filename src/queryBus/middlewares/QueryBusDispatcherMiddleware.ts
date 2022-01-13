@@ -5,7 +5,11 @@ import { QueryNotHandledError } from '../types/QueryNotHandledError';
 import { QueryMiddleware } from './QueryMiddleware';
 
 export class QueryBusDispatcherMiddleware implements QueryMiddleware {
-  constructor(private queryHandlers: QueryHandlers) {}
+  private constructor(private queryHandlers: QueryHandlers) {}
+
+  static build(queryHandlers: QueryHandlers): QueryBusDispatcherMiddleware {
+    return new QueryBusDispatcherMiddleware(queryHandlers);
+  }
 
   async handle(query: Query): Promise<ReadModel> {
     const queryName = query.label();

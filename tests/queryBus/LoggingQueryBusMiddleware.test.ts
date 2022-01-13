@@ -27,7 +27,7 @@ describe('Logging Query Bus Middleware', () => {
 
         try {
           // WHEN
-          await new LoggingQueryBusMiddleware(instance(logger), instance(middleware)).handle(query);
+          await LoggingQueryBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(query);
         } catch (error) {
           // THEN
           verify(logger.info(`Executing query ${query.label()}`, deepEqual({ query }))).once();
@@ -48,7 +48,7 @@ describe('Logging Query Bus Middleware', () => {
         when(middleware.handle(query)).thenResolve(expected);
 
         // WHEN
-        await new LoggingQueryBusMiddleware(instance(logger), instance(middleware)).handle(query);
+        await LoggingQueryBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(query);
 
         // THEN
         verify(logger.info(`Executing query ${query.label()}`, deepEqual({ query }))).once();

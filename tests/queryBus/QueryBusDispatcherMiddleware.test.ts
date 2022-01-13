@@ -20,7 +20,7 @@ describe('Query Dispatcher Middleware', () => {
         const query = new NotHandledQuery();
 
         // WHEN
-        const publish = new QueryBusDispatcherMiddleware({}).handle(query);
+        const publish = QueryBusDispatcherMiddleware.build({}).handle(query);
 
         // WHEN
         t.rejects(() => publish, new QueryNotHandledError(query.label()));
@@ -43,7 +43,7 @@ describe('Query Dispatcher Middleware', () => {
         when(queryHandler.handle(query)).thenResolve(expected);
 
         // WHEN
-        const actual = await new QueryBusDispatcherMiddleware({ [HandledQuery.name]: instance(queryHandler) }).handle(
+        const actual = await QueryBusDispatcherMiddleware.build({ [HandledQuery.name]: instance(queryHandler) }).handle(
           query
         );
 

@@ -26,7 +26,7 @@ describe('Logging Command Bus Middleware', () => {
 
         try {
           // WHEN
-          await new LoggingCommandBusMiddleware(instance(logger), instance(middleware)).handle(command);
+          await LoggingCommandBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(command);
         } catch (error) {
           // THEN
           verify(logger.info(`Executing command ${command.label()}`, deepEqual({ command }))).once();
@@ -44,7 +44,7 @@ describe('Logging Command Bus Middleware', () => {
         when(middleware.handle(command)).thenResolve({ events: [], result: null });
 
         // WHEN
-        await new LoggingCommandBusMiddleware(instance(logger), instance(middleware)).handle(command);
+        await LoggingCommandBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(command);
 
         // THEN
         verify(logger.info(`Executing command ${command.label()}`, deepEqual({ command }))).once();

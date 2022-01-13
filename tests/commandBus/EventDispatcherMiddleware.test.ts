@@ -35,7 +35,7 @@ describe('Event Dispatcher Middleware', () => {
       when(middleware.handle(command)).thenResolve({ events, result: null });
 
       // WHEN
-      await new EventDispatcherMiddleware(instance(eventBus), instance(middleware)).handle(command);
+      await EventDispatcherMiddleware.build(instance(eventBus)).chainWith(instance(middleware)).handle(command);
 
       // THEN
       verify(middleware.handle(command)).calledBefore(eventBus.publish(events));

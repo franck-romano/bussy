@@ -5,7 +5,11 @@ import { CommandResponse } from '../types/CommandResponse';
 import { Command } from '../types/Command';
 
 export class CommandBusDispatcherMiddleware implements CommandMiddleware {
-  constructor(private commandHandlers: CommandHandlers) {}
+  private constructor(private commandHandlers: CommandHandlers) {}
+
+  static build(handlers: CommandHandlers): CommandBusDispatcherMiddleware {
+    return new this(handlers);
+  }
 
   async handle(command: Command): Promise<CommandResponse> {
     const commandName = command.label();

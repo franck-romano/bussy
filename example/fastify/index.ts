@@ -1,32 +1,44 @@
 import fastify from 'fastify';
-import { CommandBus, QueryBus } from '../../src';
-import { ListCommentsQuery } from './query/ListCommentsQuery';
-import { CreateCommentCommand } from './command/CreateCommentCommand';
-import { logger } from './Logger';
+import { CommandBus, EventBus, QueryBus } from '../../src';
+import { ListCommentsQuery } from './comments/read/ListCommentsQuery';
+import { CreateCommentCommand } from './comments/write/CreateCommentCommand';
 import { LoggingCommandBusMiddleware } from '../../src/commandBus/middlewares/LoggingCommandBusMiddleware';
 import { EventDispatcherMiddleware } from '../../src/commandBus/middlewares/EventDispatcherMiddleware';
-import { eventBus } from './EventBus';
 import { CommandBusDispatcherMiddleware } from '../../src/commandBus/middlewares/CommandBusDispatcherMiddleware';
-import { CreateCommentCommandHandler } from './command/CreateCommentCommandHandler';
+import { CreateCommentCommandHandler } from './comments/write/CreateCommentCommandHandler';
 import { LoggingQueryBusMiddleware } from '../../src/queryBus/middlewares/LoggingQueryBusMiddleware';
 import { QueryBusDispatcherMiddleware } from '../../src/queryBus/middlewares/QueryBusDispatcherMiddleware';
-import { ListCommentsQueryHandler } from './query/ListCommentsQueryHandler';
+import { ListCommentsQueryHandler } from './comments/read/ListCommentsQueryHandler';
+import { InMemoryCommentRepository } from './comments/domain/CommentRepository';
+import { LoggingEventBusMiddleware } from '../../src/eventBus/middlewares/LoggingEventBusMiddleware';
+import { CommentCreatedEvent } from './comments/write/events/CommentCreatedEvent';
+import { CommentCreatedEventHandler } from './comments/write/events/CommentCreatedEventHandler';
+import { PinoLogger } from '../../src/common/BusLogger';
 
 const server = fastify({ logger: true });
+const logger = new PinoLogger();
+const commentRepository = new InMemoryCommentRepository();
 
-const queryBusDispatcherMiddleware = new QueryBusDispatcherMiddleware({
-  [ListCommentsQuery.name]: new ListCommentsQueryHandler()
+const queryMiddlewareChain = LoggingQueryBusMiddleware.build(logger).chainWith(
+  QueryBusDispatcherMiddleware.build({
+    [ListCommentsQuery.name]: new ListCommentsQueryHandler(commentRepository)
+  })
+);
+
+const eventBus = new EventBus(logger, [new LoggingEventBusMiddleware(logger)], {
+  [CommentCreatedEvent.name]: [new CommentCreatedEventHandler()]
 });
-const loggingQueryBusMiddleware = new LoggingQueryBusMiddleware(logger, queryBusDispatcherMiddleware);
 
-const commandBusDispatcherMiddleware = new CommandBusDispatcherMiddleware({
-  [CreateCommentCommand.name]: new CreateCommentCommandHandler()
-});
-const eventDispatcherMiddleware = new EventDispatcherMiddleware(eventBus, commandBusDispatcherMiddleware);
-const loggingCommandBusMiddleware = new LoggingCommandBusMiddleware(logger, eventDispatcherMiddleware);
+const commandMiddlewareChain = LoggingCommandBusMiddleware.build(logger).chainWith(
+  EventDispatcherMiddleware.build(eventBus).chainWith(
+    CommandBusDispatcherMiddleware.build({
+      [CreateCommentCommand.name]: new CreateCommentCommandHandler(commentRepository)
+    })
+  )
+);
 
-const queryBus = new QueryBus(loggingQueryBusMiddleware);
-const commandBus = new CommandBus(loggingCommandBusMiddleware);
+const queryBus = new QueryBus(queryMiddlewareChain);
+const commandBus = new CommandBus(commandMiddlewareChain);
 
 server.get('/comments', async (request, reply) => {
   return queryBus.publish(new ListCommentsQuery());
