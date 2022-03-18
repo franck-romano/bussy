@@ -52,6 +52,6 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "pino": "^7.6.2"
+    "pino": "^7.9.1"
   }
 }
