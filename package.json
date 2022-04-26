@@ -4,7 +4,16 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "description": "CQS bus",
+  "description": "Command & query bus implementations",
+  "keywords": [
+    "CQS",
+    "bus",
+    "Command",
+    "Query",
+    "DDD",
+    "Event",
+    "CQRS"
+  ],
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -52,6 +61,6 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "pino": "^7.6.2"
+    "pino": "7.6.2"
   }
 }

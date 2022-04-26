@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import { CommandBus, EventBus, QueryBus } from '../../src';
+import { CommandBus, EventBus, QueryBus } from '../../index';
 import { ListCommentsQuery } from './comments/read/ListCommentsQuery';
 import { CreateCommentCommand } from './comments/write/CreateCommentCommand';
 import { LoggingCommandBusMiddleware } from '../../src/commandBus/middlewares/LoggingCommandBusMiddleware';
