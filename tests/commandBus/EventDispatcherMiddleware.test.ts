@@ -6,12 +6,13 @@ import { EventBus } from '../../src/eventBus/types/EventBus';
 import { EventDispatcherMiddleware } from '../../src/commandBus/middlewares/EventDispatcherMiddleware';
 import { DomainEvent } from '../../src/eventBus/types/DomainEvent';
 import { SerializedDomainEvent } from '../../src/eventBus/types/SerializedDomainEvent';
+import { VoidCommand } from '../../src/commandBus/types/VoidCommand';
 
 t.mochaGlobals();
 
 describe('Event Dispatcher Middleware', () => {
   describe('.handle()', () => {
-    class TestCommand implements Command {
+    class TestCommand implements VoidCommand {
       label = () => TestCommand.name;
     }
 
@@ -29,10 +30,10 @@ describe('Event Dispatcher Middleware', () => {
     it('executes the command and publish the events', async () => {
       // GIVEN
       const eventBus = mock<EventBus>();
-      const middleware = mock<CommandMiddleware>();
+      const middleware = mock<CommandMiddleware<void>>();
 
       const events = [new DummyEvent()];
-      when(middleware.handle(command)).thenResolve({ events, result: null });
+      when(middleware.handle(command)).thenResolve({ events, result: undefined });
 
       // WHEN
       await EventDispatcherMiddleware.build(instance(eventBus)).chainWith(instance(middleware)).handle(command);

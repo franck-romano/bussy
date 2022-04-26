@@ -11,7 +11,7 @@ t.mochaGlobals();
 
 describe('Command Dispatcher Middleware', () => {
   describe('.handle()', () => {
-    class HandledCommand implements Command {
+    class HandledCommand implements Command<string> {
       label = () => HandledCommand.name;
     }
 
@@ -52,8 +52,8 @@ describe('Command Dispatcher Middleware', () => {
         }
 
         const command = new HandledCommand();
-        const commandHandler = mock<CommandHandler<HandledCommand>>();
-        const expected = { events: [new TestDomainEvent()], result: null };
+        const commandHandler = mock<CommandHandler<string, HandledCommand>>();
+        const expected = { events: [new TestDomainEvent()], result: 'some-result' };
 
         when(commandHandler.handle(command)).thenResolve(expected);
 

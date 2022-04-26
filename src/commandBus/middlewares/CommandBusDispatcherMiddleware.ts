@@ -4,14 +4,14 @@ import { CommandNotHandledError } from '../types/CommandNotHandledError';
 import { CommandResponse } from '../types/CommandResponse';
 import { Command } from '../types/Command';
 
-export class CommandBusDispatcherMiddleware implements CommandMiddleware {
-  private constructor(private commandHandlers: CommandHandlers) {}
+export class CommandBusDispatcherMiddleware<T> implements CommandMiddleware<T> {
+  private constructor(private commandHandlers: CommandHandlers<T>) {}
 
-  static build(handlers: CommandHandlers): CommandBusDispatcherMiddleware {
+  static build<T>(handlers: CommandHandlers<T>): CommandBusDispatcherMiddleware<T> {
     return new this(handlers);
   }
 
-  async handle(command: Command): Promise<CommandResponse> {
+  async handle(command: Command<T>): Promise<CommandResponse<T>> {
     const commandName = command.label();
     const commandHandler = this.commandHandlers[commandName];
 

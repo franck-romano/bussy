@@ -3,6 +3,6 @@ import { Command } from '../types/Command';
 import { Middleware } from '../../common/Middleware';
 import { ChainableMiddleware } from '../../common/ChainableMiddleware';
 
-export interface CommandMiddleware extends Middleware<Command, CommandResponse> {}
+export interface CommandMiddleware<T> extends Middleware<Command<T>, CommandResponse<T>> {}
 
-export type ChainableCommandMiddleware<SELF extends CommandMiddleware> = ChainableMiddleware<SELF>;
+export type ChainableCommandMiddleware<T, SELF extends CommandMiddleware<T>> = ChainableMiddleware<SELF>;

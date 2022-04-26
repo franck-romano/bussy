@@ -3,6 +3,6 @@ import { Command } from './Command';
 import { CommandHandler } from './CommandHandler';
 import { CommandResponse } from './CommandResponse';
 
-export type CommandHandlers = { [commandLabel: string]: CommandHandler<Command> };
+export type CommandHandlers<T> = { [commandLabel: string]: CommandHandler<T, Command<T>> };
 
-export interface CommandBus extends Bus<Command, CommandResponse> {}
+export interface CommandBus extends Bus<Command<unknown>, CommandResponse<unknown>> {}

@@ -9,7 +9,7 @@ t.mochaGlobals();
 
 describe('Logging Command Bus Middleware', () => {
   describe('.chainWith()', () => {
-    class TestCommand implements Command {
+    class TestCommand implements Command<string> {
       label = () => TestCommand.name;
     }
 
@@ -19,7 +19,7 @@ describe('Logging Command Bus Middleware', () => {
       it('propagates the error', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<CommandMiddleware>();
+        const middleware = mock<CommandMiddleware<string>>();
 
         const expected = new Error();
         when(middleware.handle(command)).thenReject(expected);
@@ -39,9 +39,9 @@ describe('Logging Command Bus Middleware', () => {
       it('returns the result', async () => {
         // GIVEN
         const logger = mock<BusLogger>();
-        const middleware = mock<CommandMiddleware>();
+        const middleware = mock<CommandMiddleware<string>>();
 
-        when(middleware.handle(command)).thenResolve({ events: [], result: null });
+        when(middleware.handle(command)).thenResolve({ events: [], result: 'some-result' });
 
         // WHEN
         await LoggingCommandBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(command);

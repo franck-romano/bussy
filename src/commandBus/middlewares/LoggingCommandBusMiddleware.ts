@@ -3,18 +3,18 @@ import { ChainableCommandMiddleware, CommandMiddleware } from './CommandMiddlewa
 import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 
-export class LoggingCommandBusMiddleware implements CommandMiddleware {
-  private constructor(private logger: BusLogger, private next: CommandMiddleware) {}
+export class LoggingCommandBusMiddleware<T> implements CommandMiddleware<T> {
+  private constructor(private logger: BusLogger, private next: CommandMiddleware<T>) {}
 
-  static build(logger: BusLogger): ChainableCommandMiddleware<LoggingCommandBusMiddleware> {
+  static build<T>(logger: BusLogger): ChainableCommandMiddleware<T, LoggingCommandBusMiddleware<T>> {
     return {
-      chainWith(next: CommandMiddleware): LoggingCommandBusMiddleware {
+      chainWith(next: CommandMiddleware<T>): LoggingCommandBusMiddleware<T> {
         return new LoggingCommandBusMiddleware(logger, next);
       }
     };
   }
 
-  async handle(command: Command): Promise<CommandResponse> {
+  async handle(command: Command<T>): Promise<CommandResponse<T>> {
     this.logger.info(`Executing command ${command.label()}`, { command });
     try {
       const result = await this.next.handle(command);

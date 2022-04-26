@@ -1,6 +1,6 @@
 import { DomainEvent } from '../../eventBus/types/DomainEvent';
 
-export interface CommandResponse {
+export interface CommandResponse<RESULT> {
   events: ReadonlyArray<DomainEvent>;
-  result: string | number | boolean | void | null | Record<any, any>;
+  result: RESULT;
 }

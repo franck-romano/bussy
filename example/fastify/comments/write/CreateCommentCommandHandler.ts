@@ -4,10 +4,10 @@ import { CommandResponse } from '../../../../src/commandBus/types/CommandRespons
 import { CommentRepository } from '../domain/CommentRepository';
 import { Comment } from '../domain/Comment';
 
-export class CreateCommentCommandHandler implements CommandHandler<CreateCommentCommand> {
+export class CreateCommentCommandHandler implements CommandHandler<string, CreateCommentCommand> {
   constructor(private repository: CommentRepository) {}
 
-  async handle(command: CreateCommentCommand): Promise<CommandResponse> {
+  async handle(command: CreateCommentCommand): Promise<CommandResponse<string>> {
     const comment = Comment.create(command.content);
     this.repository.add(comment);
 

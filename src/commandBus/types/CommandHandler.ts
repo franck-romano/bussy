@@ -1,8 +1,8 @@
-import { CommandResponse } from './CommandResponse';
 import { Command } from './Command';
+import { CommandResponse } from './CommandResponse';
 
-export interface CommandHandler<COMMAND extends Command> {
+export interface CommandHandler<RESULT, COMMAND extends Command<RESULT>> {
   name(): string;
 
-  handle(command: COMMAND): Promise<CommandResponse>;
+  handle(command: COMMAND): Promise<CommandResponse<RESULT>>;
 }

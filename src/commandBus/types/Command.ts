@@ -1,3 +1,3 @@
 import { Message } from '../../common/Message';
 
-export interface Command extends Message {}
+export interface Command<T> extends Message {}
