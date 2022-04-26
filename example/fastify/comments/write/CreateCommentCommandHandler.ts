@@ -11,10 +11,7 @@ export class CreateCommentCommandHandler implements CommandHandler<string, Creat
     const comment = Comment.create(command.content);
     this.repository.add(comment);
 
-    return {
-      events: comment.raisedEvents,
-      result: comment.id
-    };
+    return CommandResponse.with(comment.id, comment.raisedEvents);
   }
 
   name = () => CreateCommentCommandHandler.name;
