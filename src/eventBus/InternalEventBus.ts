@@ -1,7 +1,6 @@
 import { DomainEvent } from './types/DomainEvent';
 import { EventBus, EventHandlers } from './types/EventBus';
 import { EventBusMiddleware } from './middlewares/EventBusMiddleware';
-import { EventNotHandledError } from './types/EventNotHandledError';
 import { BusLogger } from '../common/BusLogger';
 import { EventHandler } from './types/EventHandler';
 
@@ -15,10 +14,6 @@ export class InternalEventBus implements EventBus {
   publish(events: ReadonlyArray<DomainEvent>): void {
     events.reduce((domainEvents, event) => {
       const correspondingEventHandlers = this.eventHandlers[event.label()];
-
-      if (!correspondingEventHandlers) {
-        throw new EventNotHandledError(event.label());
-      }
 
       this.eventMiddlewares.forEach((middleware) => middleware.handle(event));
 

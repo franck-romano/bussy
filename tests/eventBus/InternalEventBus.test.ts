@@ -43,12 +43,6 @@ describe('Internal Event Bus', () => {
       when(dummyEventEventHandler.reactTo(otherEvent)).thenResolve();
     });
 
-    context('no event handlers are registered for the event', () => {
-      it('raises an error', () => {
-        t.throws(() => new InternalEventBus(logger, [], {}).publish([event]), new EventNotHandledError(event.label()));
-      });
-    });
-
     context('event handlers are registered for some events', () => {
       it('calls the corresponding event handlers', () => {
         // GIVEN
