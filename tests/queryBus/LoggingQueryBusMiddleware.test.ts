@@ -2,7 +2,6 @@ import t from 'tap';
 import { Query } from '../../src/queryBus/types/Query';
 import { deepEqual, instance, mock, verify, when } from 'ts-mockito';
 import { BusLogger } from '../../src/common/BusLogger';
-import { ReadModel } from '../../src/queryBus/types/ReadModel';
 import { LoggingQueryBusMiddleware } from '../../src/queryBus/middlewares/LoggingQueryBusMiddleware';
 import { QueryMiddleware } from '../../src/queryBus/middlewares/QueryMiddleware';
 
@@ -10,7 +9,7 @@ t.mochaGlobals();
 
 describe('Logging Query Bus Middleware', () => {
   describe('.handle()', () => {
-    class TestQuery implements Query {
+    class TestQuery extends Query<boolean> {
       label = () => TestQuery.name;
     }
 
@@ -42,10 +41,7 @@ describe('Logging Query Bus Middleware', () => {
         const logger = mock<BusLogger>();
         const middleware = mock<QueryMiddleware>();
 
-        class TestReadModel implements ReadModel {}
-
-        const expected = new TestReadModel();
-        when(middleware.handle(query)).thenResolve(expected);
+        when(middleware.handle(query)).thenResolve(true);
 
         // WHEN
         await LoggingQueryBusMiddleware.build(instance(logger)).chainWith(instance(middleware)).handle(query);

@@ -2,7 +2,6 @@ import t from 'tap';
 import { QueryBusDispatcherMiddleware } from '../../src/queryBus/middlewares/QueryBusDispatcherMiddleware';
 import { Query } from '../../src/queryBus/types/Query';
 import { QueryNotHandledError } from '../../src/queryBus/types/QueryNotHandledError';
-import { ReadModel } from '../../src/queryBus/types/ReadModel';
 import { instance, mock, when } from 'ts-mockito';
 import { QueryHandler } from '../../src/queryBus/types/QueryHandler';
 
@@ -13,7 +12,7 @@ describe('Query Dispatcher Middleware', () => {
     context('no query handler for the query', () => {
       it('raises an error', async () => {
         // GIVEN
-        class NotHandledQuery implements Query {
+        class NotHandledQuery extends Query<void> {
           label = () => NotHandledQuery.name;
         }
 
@@ -30,17 +29,14 @@ describe('Query Dispatcher Middleware', () => {
     context('a query handler exists for the query', () => {
       it('returns the result', async () => {
         // GIVEN
-        class HandledQuery implements Query {
+        class HandledQuery extends Query<boolean> {
           label = () => HandledQuery.name;
         }
 
-        class TestReadModel implements ReadModel {}
-
         const query = new HandledQuery();
-        const expected = new TestReadModel();
 
-        const queryHandler = mock<QueryHandler<HandledQuery>>();
-        when(queryHandler.handle(query)).thenResolve(expected);
+        const queryHandler = mock<QueryHandler<boolean, HandledQuery>>();
+        when(queryHandler.handle(query)).thenResolve(true);
 
         // WHEN
         const actual = await QueryBusDispatcherMiddleware.build({ [HandledQuery.name]: instance(queryHandler) }).handle(
@@ -48,7 +44,7 @@ describe('Query Dispatcher Middleware', () => {
         );
 
         // THEN
-        t.equal(actual, expected);
+        t.equal(actual, true);
       });
     });
   });

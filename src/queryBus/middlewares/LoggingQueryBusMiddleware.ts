@@ -1,4 +1,3 @@
-import { ReadModel } from '../types/ReadModel';
 import { BusLogger } from '../../common/BusLogger';
 import { Query } from '../types/Query';
 import { ChainableQueryMiddleware, QueryMiddleware } from './QueryMiddleware';
@@ -14,7 +13,7 @@ export class LoggingQueryBusMiddleware implements QueryMiddleware {
     };
   }
 
-  async handle(query: Query): Promise<ReadModel> {
+  async handle<RESULT>(query: Query<RESULT>): Promise<RESULT> {
     const queryName = query.label();
 
     this.logger.info(`Executing query ${queryName}`, { query });
@@ -22,7 +21,7 @@ export class LoggingQueryBusMiddleware implements QueryMiddleware {
       const result = await this.next.handle(query);
       this.logger.info(`Success on query ${queryName}`, { query });
 
-      return result;
+      return result as RESULT;
     } catch (error) {
       this.logger.error(`Error on query ${queryName}`, { error });
       throw error;

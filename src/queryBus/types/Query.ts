@@ -1,3 +1,5 @@
-import { Message } from '../../common/Message';
+export abstract class Query<RESULT> {
+  protected result!: RESULT;
 
-export interface Query extends Readonly<Message> {}
+  abstract label(): string;
+}

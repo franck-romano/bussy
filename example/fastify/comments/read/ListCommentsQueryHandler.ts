@@ -1,17 +1,14 @@
 import { QueryHandler } from '../../../../src/queryBus/types/QueryHandler';
 import { ListCommentsQuery } from './ListCommentsQuery';
 import { CommentRepository } from '../domain/CommentRepository';
-import { CommentsReadModel } from './CommentsReadModel';
+import { Comment } from '../domain/Comment';
 
-export class ListCommentsQueryHandler implements QueryHandler<ListCommentsQuery> {
+export class ListCommentsQueryHandler implements QueryHandler<Comment[], ListCommentsQuery> {
   constructor(private repository: CommentRepository) {}
 
-  async handle(query: ListCommentsQuery): Promise<CommentsReadModel> {
-    const comments = this.repository.list();
-    return {
-      comments: comments.map(({ id, content }) => ({ id, content }))
-    };
-  }
-
   name = (): string => ListCommentsQueryHandler.name;
+
+  async handle(query: ListCommentsQuery): Promise<Comment[]> {
+    return this.repository.list();
+  }
 }

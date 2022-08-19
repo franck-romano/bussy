@@ -14,7 +14,6 @@ export { CommandResponse } from './src/commandBus/types/CommandResponse';
 export { CommandBusDispatcherMiddleware } from './src/commandBus/middlewares/CommandBusDispatcherMiddleware';
 
 export { Query } from './src/queryBus/types/Query';
-export { ReadModel } from './src/queryBus/types/ReadModel';
 export { QueryHandler } from './src/queryBus/types/QueryHandler';
 export { QueryMiddleware } from './src/queryBus/middlewares/QueryMiddleware';
 export { QueryBusDispatcherMiddleware } from './src/queryBus/middlewares/QueryBusDispatcherMiddleware';

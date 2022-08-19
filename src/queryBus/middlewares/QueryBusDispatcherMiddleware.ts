@@ -1,8 +1,8 @@
 import { QueryHandlers } from '../types/QueryBus';
 import { Query } from '../types/Query';
-import { ReadModel } from '../types/ReadModel';
 import { QueryNotHandledError } from '../types/QueryNotHandledError';
 import { QueryMiddleware } from './QueryMiddleware';
+import { QueryHandler } from '../types/QueryHandler';
 
 export class QueryBusDispatcherMiddleware implements QueryMiddleware {
   private constructor(private queryHandlers: QueryHandlers) {}
@@ -11,9 +11,9 @@ export class QueryBusDispatcherMiddleware implements QueryMiddleware {
     return new QueryBusDispatcherMiddleware(queryHandlers);
   }
 
-  async handle(query: Query): Promise<ReadModel> {
+  async handle<RESULT>(query: Query<RESULT>): Promise<RESULT> {
     const queryName = query.label();
-    const queryHandler = this.queryHandlers[queryName];
+    const queryHandler: QueryHandler<RESULT, Query<RESULT>> = this.queryHandlers[queryName];
 
     if (!queryHandler) {
       throw new QueryNotHandledError(queryName);

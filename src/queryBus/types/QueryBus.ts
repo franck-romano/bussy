@@ -1,8 +1,7 @@
-import { ReadModel } from './ReadModel';
 import { Query } from './Query';
-import { Bus } from '../../common/Bus';
 import { QueryHandler } from './QueryHandler';
+import { Bus } from '../../common/Bus';
 
-export type QueryHandlers = { [query: string]: QueryHandler<Query> };
+export type QueryHandlers = { [query: string]: QueryHandler<any, Query<any>> };
 
-export interface QueryBus extends Bus<Query, ReadModel> {}
+export interface QueryBus extends Bus<Query<unknown>, unknown> {}
