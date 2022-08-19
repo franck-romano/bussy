@@ -1,6 +1,5 @@
 import t from 'tap';
 import { instance, mock, verify, when } from 'ts-mockito';
-import { Command } from '../../src/commandBus/types/Command';
 import { CommandMiddleware } from '../../src/commandBus/middlewares/CommandMiddleware';
 import { EventBus } from '../../src/eventBus/types/EventBus';
 import { EventDispatcherMiddleware } from '../../src/commandBus/middlewares/EventDispatcherMiddleware';
@@ -12,7 +11,7 @@ t.mochaGlobals();
 
 describe('Event Dispatcher Middleware', () => {
   describe('.handle()', () => {
-    class TestCommand implements VoidCommand {
+    class TestCommand extends VoidCommand {
       label = () => TestCommand.name;
     }
 

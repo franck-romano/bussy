@@ -1,3 +1,3 @@
 import { Command } from './Command';
 
-export interface VoidCommand extends Command<void> {}
+export abstract class VoidCommand extends Command<void> {}

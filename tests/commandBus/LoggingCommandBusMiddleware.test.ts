@@ -9,7 +9,7 @@ t.mochaGlobals();
 
 describe('Logging Command Bus Middleware', () => {
   describe('.chainWith()', () => {
-    class TestCommand implements Command<string> {
+    class TestCommand extends Command<string> {
       label = () => TestCommand.name;
     }
 

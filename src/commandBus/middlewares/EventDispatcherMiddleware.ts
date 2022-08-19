@@ -3,18 +3,18 @@ import { EventBus } from '../../eventBus/types/EventBus';
 import { Command } from '../types/Command';
 import { CommandResponse } from '../types/CommandResponse';
 
-export class EventDispatcherMiddleware<T> implements CommandMiddleware<T> {
-  private constructor(private eventBus: EventBus, private next: CommandMiddleware<T>) {}
+export class EventDispatcherMiddleware<RESULT> implements CommandMiddleware<RESULT> {
+  private constructor(private eventBus: EventBus, private next: CommandMiddleware<RESULT>) {}
 
-  static build<T>(eventBus: EventBus): ChainableCommandMiddleware<T, EventDispatcherMiddleware<T>> {
+  static build<RESULT>(eventBus: EventBus): ChainableCommandMiddleware<RESULT, EventDispatcherMiddleware<RESULT>> {
     return {
-      chainWith(next: CommandMiddleware<T>): EventDispatcherMiddleware<T> {
+      chainWith(next: CommandMiddleware<RESULT>): EventDispatcherMiddleware<RESULT> {
         return new EventDispatcherMiddleware(eventBus, next);
       }
     };
   }
 
-  async handle(command: Command<T>): Promise<CommandResponse<T>> {
+  async handle(command: Command<RESULT>): Promise<CommandResponse<RESULT>> {
     const commandResponse = await this.next.handle(command);
 
     this.eventBus.publish(commandResponse.events);

@@ -10,7 +10,7 @@ describe('Internal Command Bus', () => {
   describe('.publish()', () => {
     it('triggers middlewares chain', async () => {
       // GIVEN
-      class TestCommand implements VoidCommand {
+      class TestCommand extends VoidCommand {
         label = () => TestCommand.name;
       }
 

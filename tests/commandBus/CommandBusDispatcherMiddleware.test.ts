@@ -11,7 +11,7 @@ t.mochaGlobals();
 
 describe('Command Dispatcher Middleware', () => {
   describe('.handle()', () => {
-    class HandledCommand implements Command<string> {
+    class HandledCommand extends Command<string> {
       label = () => HandledCommand.name;
     }
 
