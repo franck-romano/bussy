@@ -61,6 +61,6 @@
     "tabWidth": 2
   },
   "dependencies": {
-    "pino": "7.6.2"
+    "pino": "8.6.1"
   }
 }
